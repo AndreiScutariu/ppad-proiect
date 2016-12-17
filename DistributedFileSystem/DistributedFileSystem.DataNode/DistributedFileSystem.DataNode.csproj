@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5ACE680E-C620-42F8-BCA5-5429372AE662}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{8A057E96-B2DD-4BB4-BEFB-296A2921C621}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DistributedFileSystem.Common</RootNamespace>
-    <AssemblyName>DistributedFileSystem.Common</AssemblyName>
+    <RootNamespace>DistributedFileSystem.DataNode</RootNamespace>
+    <AssemblyName>DistributedFileSystem.DataNode</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -44,17 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\INeedToSubscribeToMaster.cs" />
+    <Compile Include="DataNodeEntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources.cs" />
-    <Compile Include="SocketWrapper\Package.cs" />
-    <Compile Include="SocketWrapper\Udp\UdpBase.cs" />
-    <Compile Include="SocketWrapper\Udp\UdpListener.cs" />
-    <Compile Include="SocketWrapper\Udp\UdpUser.cs" />
-    <Compile Include="ClientInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DistributedFileSystem.Common\DistributedFileSystem.Common.csproj">
+      <Project>{5ACE680E-C620-42F8-BCA5-5429372AE662}</Project>
+      <Name>DistributedFileSystem.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
