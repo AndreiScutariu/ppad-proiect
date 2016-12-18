@@ -50,9 +50,11 @@
     <Compile Include="DataNode\DataNodeInfo.cs" />
     <Compile Include="FilesMetadata\Handler.cs" />
     <Compile Include="FilesMetadata\Model.cs" />
-    <Compile Include="HeartbeatsReceiver.cs" />
+    <Compile Include="Components\HeartbeatsReceiver.cs" />
     <Compile Include="MasterEntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Components\InactiveNodesDetector.cs" />
+    <Compile Include="Components\ReplicationLevelHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,6 +1,7 @@
 ﻿namespace DistributedFileSystem.Common
 {
     using System.Collections.Generic;
+    using System.Net;
 
     public class ClientInfo
     {
