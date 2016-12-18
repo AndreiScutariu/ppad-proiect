@@ -2,7 +2,7 @@
 {
     using System.IO;
 
-    internal class DataNodeInfo
+    public class DataNodeInfo
     {
         public int Id { get; set; }
 

@@ -6,6 +6,7 @@ namespace DistributedFileSystem.Master.Components
     using System.Linq;
     using System.Threading;
 
+    using DistributedFileSystem.Common;
     using DistributedFileSystem.Common.SocketWrapper.Udp;
     using DistributedFileSystem.Master.DataNode;
     using DistributedFileSystem.Master.FilesMetadata;
@@ -60,7 +61,7 @@ namespace DistributedFileSystem.Master.Components
                     break;
                 }
 
-                //PrintInfos();
+                PrintInfos();
 
                 ReplicateFiles(nodesContainer);
 
@@ -72,6 +73,8 @@ namespace DistributedFileSystem.Master.Components
 
         private void ReplicateFiles(ConcurrentDictionary<int, DataNodeInfo> nodesContainer)
         {
+            List<int> allNodes = nodesContainer.Keys.ToList();
+
             foreach (KeyValuePair<string, ReplicatedFileData> replicatedFileData in replicatedFileIndex)
             {
                 var file = replicatedFileData.Key;
@@ -84,17 +87,19 @@ namespace DistributedFileSystem.Master.Components
 
                 try
                 {
-                    var source = fileData.NodesWhereIsReplicated[0]; ////TODO - Randomize this
-
-                    var destination = 4; ////TODO - Randomize this
-
-                    var sourceNodeDetails = nodesContainer[source];
-                    var destinationNodeDetails = nodesContainer[destination];
+                    var randomSourceId = fileData.NodesWhereIsReplicated.Random();
+                    var randomDestinationId = allNodes.Except(fileData.NodesWhereIsReplicated).ToList().Random();
 
                     Console.WriteLine(
-                        $"{file} - replicated from {sourceNodeDetails.ClientInfo.Id} -> {destinationNodeDetails.ClientInfo.Id}");
+                        $"{file} - {nodesContainer[randomSourceId].ClientInfo.Id} -> {nodesContainer[randomDestinationId].ClientInfo.Id}");
 
-                    udpListener.Reply("some message just for you", sourceNodeDetails.UdpEndpointAddres);
+                    udpListener.Reply(
+                        new FileDetailsForReplication
+                            {
+                                DestinationTcpPort = nodesContainer[randomDestinationId].ClientInfo.TcpPort,
+                                FileName = file
+                            },
+                        nodesContainer[randomSourceId].UdpEndpointAddres);
                 }
                 catch (IndexOutOfRangeException)
                 {
@@ -123,11 +128,11 @@ namespace DistributedFileSystem.Master.Components
             foreach (KeyValuePair<string, ReplicatedFileData> replicatedFilePair in replicatedFileIndex)
             {
                 Console.Write(
-                    $"{replicatedFilePair.Key} - {replicatedFilePair.Value.MasterReplicationLevel} "
-                    + $"- {replicatedFilePair.Value.ActualReplicationLevel} - replicated in");
+                    $"{replicatedFilePair.Key} - ReplicationLevel: {replicatedFilePair.Value.MasterReplicationLevel} "
+                    + $", Actual ReplicationLevel: {replicatedFilePair.Value.ActualReplicationLevel}. Replicated in nodes:");
                 foreach (var c in replicatedFilePair.Value.NodesWhereIsReplicated)
                 {
-                    Console.Write($" - {c}");
+                    Console.Write($" {c}");
                 }
                 Console.WriteLine();
             }
@@ -140,6 +145,16 @@ namespace DistributedFileSystem.Master.Components
             public int ActualReplicationLevel { get; set; }
 
             public List<int> NodesWhereIsReplicated { get; set; }
+        }
+    }
+
+    public static class ListExtentions
+    {
+        public static int Random(this List<int> nodes)
+        {
+            var randId = new Random().Next(0, nodes.Count);
+
+            return nodes[randId];
         }
     }
 }

@@ -24,20 +24,24 @@
             var info = new DataNodeInfo
                            {
                                Id = nodeId,
-                               TcpPort = 20000 + nodeId,
+                               TcpPort = 44400 + nodeId,
                                StorageDirectory = new DirectoryInfo(dataNodeStoragePath)
                            };
 
             var tokenSource = new CancellationTokenSource();
+
             var udpConnection = UdpUser.ConnectTo(Resources.MasterMulticastIp, Resources.MasterMulticastPort);
 
             var hearbeatsSender = new HeartbeatsSender(udpConnection, info, tokenSource.Token);
-            hearbeatsSender.StartSendHeartbeats();
+            hearbeatsSender.Start();
 
-            var udpMessageReceiver = new UdpMessageReceiver(udpConnection, info, tokenSource.Token);
-            udpMessageReceiver.StartReceiveMessages();
+            var udpMessageReceiver = new MessageReceiver(udpConnection, info, tokenSource.Token);
+            udpMessageReceiver.Start();
 
-            Console.WriteLine("Press any key to close this data node.");
+            var fileReceiver = new FileReceiver(info, tokenSource.Token);
+            fileReceiver.Start();
+
+            Console.WriteLine("press any key to close this data node");
             Console.ReadLine();
             tokenSource.Cancel();
             udpConnection.Close();

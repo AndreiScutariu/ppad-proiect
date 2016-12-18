@@ -24,7 +24,7 @@ namespace DistributedFileSystem.DataNode.Components
             this.token = token;
         }
 
-        public void StartSendHeartbeats()
+        public void Start()
         {
             Task.Factory.StartNew(
                 () =>
@@ -33,8 +33,7 @@ namespace DistributedFileSystem.DataNode.Components
                         {
                             List<string> myFiles = dataNodeInfo.StorageDirectory.GetFiles().Select(x => x.Name).ToList();
 
-                            udpUser.Send(
-                                new ClientInfo { Id = dataNodeInfo.Id, TcpPort = dataNodeInfo.TcpPort, Files = myFiles });
+                            udpUser.Send(new ClientInfo { Id = dataNodeInfo.Id, TcpPort = dataNodeInfo.TcpPort, Files = myFiles });
 
                             Thread.Sleep(TimeSpan.FromMilliseconds(500));
 

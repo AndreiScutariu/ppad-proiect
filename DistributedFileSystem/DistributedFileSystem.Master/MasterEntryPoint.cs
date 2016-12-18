@@ -38,7 +38,7 @@
             Task.Run(() => inactiveNodesRemover.Callback(NodesContainer, InactiveNodesQueue, cancellationToken), cancellationToken);
             Task.Run(() => replicationLevelDetector.Callback(NodesContainer, InactiveNodesQueue, cancellationToken), cancellationToken);
 
-            Console.WriteLine("Waiting for connectictions. Press any key to close the master.");
+            Console.WriteLine("waiting for connectictions; press any key to close the master");
             Console.ReadLine();
             listener.Close();
             cancellationTokenSource.Cancel();
