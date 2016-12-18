@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedFileSystem.DataN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedFileSystem.Master", "DistributedFileSystem.Master\DistributedFileSystem.Master.csproj", "{5AC0F64F-3FE8-4569-95A7-05DAC86F533D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedFileSystem.ConsoleApp", "DistributedFileSystem.ConsoleApp\DistributedFileSystem.ConsoleApp.csproj", "{F7D669F0-1ECC-4A19-ADAC-A6CB4A8F5CCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5AC0F64F-3FE8-4569-95A7-05DAC86F533D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AC0F64F-3FE8-4569-95A7-05DAC86F533D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AC0F64F-3FE8-4569-95A7-05DAC86F533D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7D669F0-1ECC-4A19-ADAC-A6CB4A8F5CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7D669F0-1ECC-4A19-ADAC-A6CB4A8F5CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7D669F0-1ECC-4A19-ADAC-A6CB4A8F5CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7D669F0-1ECC-4A19-ADAC-A6CB4A8F5CCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

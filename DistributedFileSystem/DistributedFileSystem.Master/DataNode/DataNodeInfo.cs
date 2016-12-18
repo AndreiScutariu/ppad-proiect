@@ -1,10 +1,10 @@
-﻿namespace DistributedFileSystem.Master
+﻿namespace DistributedFileSystem.Master.DataNode
 {
     using System;
 
     using DistributedFileSystem.Common;
 
-    public class DataNodeMetaData
+    public class DataNodeInfo
     {
         public ClientInfo ClientInfo { get; set; }
 

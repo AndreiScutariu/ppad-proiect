@@ -4,6 +4,8 @@
     {
         public static string StoragePath = "C:\\DistributedFileSystem\\";
 
+        public static string MasterRepo = "C:\\DistributedFileSystem\\MasterRepo\\master.dat";
+
         public static string MasterMulticastIp = "127.0.0.1";
 
         public static int MasterMulticastPort = 4567;

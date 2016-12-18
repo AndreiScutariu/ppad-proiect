@@ -1,7 +1,9 @@
 ﻿namespace DistributedFileSystem.DataNode
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@
         {
             var nodeId = int.Parse(args[0]);
 
-            var port = 20000 + nodeId;
+            var tcpPort = 20000 + nodeId;
 
             var dataNodeStoragePath = $"{Resources.StoragePath}DataNode_{nodeId}";
 
@@ -23,6 +25,8 @@
                 Directory.CreateDirectory(dataNodeStoragePath);
             }
 
+            var storageDirectory = new DirectoryInfo(dataNodeStoragePath);
+
             var heartbeatsRecevier = UdpUser.ConnectTo(Resources.MasterMulticastIp, Resources.MasterMulticastPort);
 
             Task.Factory.StartNew(
@@ -30,7 +34,9 @@
                     {
                         while (true)
                         {
-                            heartbeatsRecevier.Send(new ClientInfo { Id = nodeId, Port = port });
+                            List<string> myFiles = storageDirectory.GetFiles().Select(x => x.Name).ToList();
+
+                            heartbeatsRecevier.Send(new ClientInfo { Id = nodeId, TcpPort = tcpPort, Files = myFiles });
 
                             Thread.Sleep(TimeSpan.FromMilliseconds(500));
                         }
