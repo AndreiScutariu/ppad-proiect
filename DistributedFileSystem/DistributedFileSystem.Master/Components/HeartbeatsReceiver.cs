@@ -19,10 +19,7 @@ namespace DistributedFileSystem.Master.Components
             this.udpListener = udpListener;
         }
 
-        public async void Callback(
-            ConcurrentDictionary<int, DataNodeInfo> nodesContainer,
-            ConcurrentQueue<int> inactiveNodesQueue,
-            CancellationToken token)
+        public async void Callback(ConcurrentDictionary<int, DataNodeInfo> nodesContainer, CancellationToken token)
         {
             while (true)
             {
@@ -47,7 +44,10 @@ namespace DistributedFileSystem.Master.Components
                 }
                 else
                 {
-                    nodesContainer[dataNodeMetaData.ClientInfo.Id] = dataNodeMetaData;
+                    nodesContainer.TryUpdate(
+                        dataNodeMetaData.ClientInfo.Id,
+                        dataNodeMetaData,
+                        nodesContainer[dataNodeMetaData.ClientInfo.Id]);
                 }
 
                 if (token.IsCancellationRequested)

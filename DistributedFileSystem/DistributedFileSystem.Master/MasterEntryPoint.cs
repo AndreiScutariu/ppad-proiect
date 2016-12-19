@@ -19,8 +19,6 @@
 
         private static readonly ConcurrentDictionary<int, DataNodeInfo> NodesContainer = new ConcurrentDictionary<int, DataNodeInfo>();
 
-        private static readonly ConcurrentQueue<int> InactiveNodesQueue = new ConcurrentQueue<int>();
-
         public static void Main(string[] args)
         {
             var cancellationTokenSource = new CancellationTokenSource();
@@ -30,13 +28,13 @@
 
             var heartbeatsReceiver = new HeartbeatsReceiver(listener);
             var replicationLevelDetector = new ReplicationLevelHandler(listener);
-            var inactiveNodesRemover = new InactiveNodesDetector();
+            var inactiveNodesDetector = new InactiveNodesDetector();
 
             replicationLevelDetector.InitIndex(AllFilesMasterData);
 
-            Task.Run(() => heartbeatsReceiver.Callback(NodesContainer, InactiveNodesQueue, cancellationToken), cancellationToken);
-            Task.Run(() => inactiveNodesRemover.Callback(NodesContainer, InactiveNodesQueue, cancellationToken), cancellationToken);
-            Task.Run(() => replicationLevelDetector.Callback(NodesContainer, InactiveNodesQueue, cancellationToken), cancellationToken);
+            Task.Run(() => heartbeatsReceiver.Callback(NodesContainer, cancellationToken), cancellationToken);
+            Task.Run(() => inactiveNodesDetector.Callback(NodesContainer, cancellationToken), cancellationToken);
+            Task.Run(() => replicationLevelDetector.Callback(NodesContainer, cancellationToken), cancellationToken);
 
             Console.WriteLine("waiting for connectictions; press any key to close the master");
             Console.ReadLine();

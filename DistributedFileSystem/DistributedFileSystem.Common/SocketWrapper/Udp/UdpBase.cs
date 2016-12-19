@@ -24,6 +24,13 @@ namespace DistributedFileSystem.Common.SocketWrapper.Udp
                        };
         }
 
+        public async Task<byte[]> ReceiveBytes()
+        {
+            var result = await Client.ReceiveAsync();
+
+            return result.Buffer;
+        }
+
         public void Close()
         {
             Client.Close();

@@ -14,6 +14,8 @@
         {
             var nodeId = int.Parse(args[0]);
 
+            Console.Title = nodeId.ToString();
+
             var dataNodeStoragePath = $"{Resources.StoragePath}DataNode_{nodeId}";
 
             if (!Directory.Exists(dataNodeStoragePath))

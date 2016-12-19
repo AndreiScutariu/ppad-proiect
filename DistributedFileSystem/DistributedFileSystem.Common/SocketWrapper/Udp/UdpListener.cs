@@ -13,10 +13,32 @@
             Client = new UdpClient(endpoint);
         }
 
-        public void Reply(FileDetailsForReplication message, IPEndPoint endpoint)
+        public void Reply(ReplicateFile message, IPEndPoint endpoint)
         {
-            byte[] datagram = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(message));
-            Client.Send(datagram, datagram.Length, endpoint);
+            const byte ReplicateFile = 0x01;
+
+            byte[] command = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(message));
+
+            var bytesToSend = new byte[1 + command.Length];
+
+            bytesToSend[0] = ReplicateFile;
+            command.CopyTo(bytesToSend, 1);
+
+            Client.Send(bytesToSend, bytesToSend.Length, endpoint);
+        }
+
+        public void Reply(DeleteFile message, IPEndPoint endpoint)
+        {
+            const byte DeleteFile = 0x02;
+
+            byte[] command = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(message));
+
+            var bytesToSend = new byte[1 + command.Length];
+
+            bytesToSend[0] = DeleteFile;
+            command.CopyTo(bytesToSend, 1);
+
+            Client.Send(bytesToSend, bytesToSend.Length, endpoint);
         }
     }
 }

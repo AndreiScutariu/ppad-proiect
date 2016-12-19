@@ -37,12 +37,32 @@ namespace DistributedFileSystem.DataNode.Components
                         {
                             try
                             {
-                                var received = await udpUser.Receive();
+                                byte[] received = await udpUser.ReceiveBytes();
 
-                                var fileDetails = JsonConvert.DeserializeObject<FileDetailsForReplication>(received.Message);
+                                var receviedCommandType = received[0];
+                                var commandDetails = new byte[received.Length - 1];
 
-                                var fileSender = new FileSender(dataNodeInfo, fileDetails);
-                                fileSender.Send();
+                                Array.Copy(received, 1, commandDetails, 0, received.Length - 1);
+
+                                if (receviedCommandType == 0x01)
+                                {
+                                    var fileDetails =
+                                        JsonConvert.DeserializeObject<ReplicateFile>(
+                                            Encoding.ASCII.GetString(commandDetails, 0, commandDetails.Length));
+
+                                    var fileSender = new FileSender(dataNodeInfo, fileDetails);
+                                    fileSender.Send();
+                                }
+
+                                if (receviedCommandType == 0x02)
+                                {
+                                    var fileDetails =
+                                        JsonConvert.DeserializeObject<DeleteFile>(
+                                            Encoding.ASCII.GetString(commandDetails, 0, commandDetails.Length));
+
+                                    File.Delete(dataNodeInfo.StorageDirectory.FullName + "\\" + fileDetails.FileName);
+                                    Console.WriteLine($"file {fileDetails.FileName} was deleted");
+                                }
 
                                 if (token.IsCancellationRequested)
                                 {
@@ -62,24 +82,25 @@ namespace DistributedFileSystem.DataNode.Components
         {
             private readonly DataNodeInfo dataNodeInfo;
 
-            private readonly FileDetailsForReplication fileDetailsForReplication;
+            private readonly ReplicateFile replicateFile;
 
             private readonly Socket socket;
 
-            public FileSender(DataNodeInfo dataNodeInfo, FileDetailsForReplication fileDetailsForReplication)
+            public FileSender(DataNodeInfo dataNodeInfo, ReplicateFile replicateFile)
             {
                 this.dataNodeInfo = dataNodeInfo;
-                this.fileDetailsForReplication = fileDetailsForReplication;
+                this.replicateFile = replicateFile;
 
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-                socket.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), fileDetailsForReplication.DestinationTcpPort));
+                socket.Connect(
+                    new IPEndPoint(IPAddress.Parse("127.0.0.1"), replicateFile.DestinationTcpPort));
             }
 
             public void Send()
             {
-                var path = dataNodeInfo.StorageDirectory.FullName + "\\" + fileDetailsForReplication.FileName;
+                var path = dataNodeInfo.StorageDirectory.FullName + "\\" + replicateFile.FileName;
 
-                byte[] fileNameBytes = Encoding.ASCII.GetBytes(fileDetailsForReplication.FileName);
+                byte[] fileNameBytes = Encoding.ASCII.GetBytes(replicateFile.FileName);
                 byte[] fileDataBytes = File.ReadAllBytes(path);
                 byte[] fileNameLenght = BitConverter.GetBytes(fileNameBytes.Length);
 

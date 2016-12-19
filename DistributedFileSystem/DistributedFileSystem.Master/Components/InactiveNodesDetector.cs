@@ -12,7 +12,6 @@ namespace DistributedFileSystem.Master.Components
     {
         public void Callback(
             ConcurrentDictionary<int, DataNodeInfo> nodesContainer,
-            ConcurrentQueue<int> inactiveNodesQueue,
             CancellationToken token)
         {
             while (true)
@@ -28,8 +27,6 @@ namespace DistributedFileSystem.Master.Components
                     {
                         continue;
                     }
-
-                    inactiveNodesQueue.Enqueue(removedNode.ClientInfo.Id);
 
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("client with id {0} was removed", removedNode.ClientInfo.Id);
